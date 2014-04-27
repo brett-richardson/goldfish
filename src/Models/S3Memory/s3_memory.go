@@ -32,8 +32,8 @@ func Fetch(filename string) (string, error){
 // If file exists, add existing content to content.
 func addToExistingContent(obj s3.Object, content string) (string, error){
   exists, _      := obj.Exists()
-  new_content, _ := contentsOf(obj)
-  if exists == true { content = content + new_content }
+  old_content, _ := contentsOf(obj)
+  if exists == true { content = old_content + content }
   return content, nil
 }
 
