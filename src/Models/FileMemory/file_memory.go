@@ -8,22 +8,17 @@ import "net/http"
 
 
 func Create(filename string, request *http.Request) (string, error){
-  memory    := request.PostFormValue("memory")
-  datestamp := request.PostFormValue("datetime")
-  err       := prepareDirectory(filename)
+  err := prepareDirectory(filename)
+  if err == nil { return "Couldn't prepare directory.", err }
   var file *os.File
 
-  if err == nil {
-    file, err = os.OpenFile(filename, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0777)
-    defer file.Close()
-  }
+  file, err = os.OpenFile(filename, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0777)
+  defer file.Close()
+  if err =! nil { return "Couldn't open file.", err }
 
-  if err == nil {
-    addition := "==== " + datestamp + " ====" + "\n" + memory + "\n\n"
-    _, err = file.WriteString(addition)
-  }
-
-  if err != nil { fmt.Println(err); return "", err }
+  addition := ToMemoryString.Do(request)
+  _, err = file.WriteString(addition)
+  if err != nil { return "Couldn't write to object.", err }
   return memory, nil
 }
 
@@ -31,7 +26,6 @@ func Create(filename string, request *http.Request) (string, error){
 func Fetch(filename string) ([]string, error){
   data, err := readLines(filename)
   if err != nil { fmt.Println(err); return nil, err }
-
   return data, nil
 }
 

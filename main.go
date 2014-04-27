@@ -1,7 +1,8 @@
 package main
 
-import "github.com/go-martini/martini"
-import "./src/Controllers"
+import _ "github.com/joho/godotenv/autoload" // .env autoloaded on import
+import   "github.com/go-martini/martini"
+import   "./src/Controllers"
 
 
 func main(){
